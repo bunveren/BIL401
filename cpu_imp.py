@@ -3,14 +3,20 @@ from pyspark.sql.functions import udf, col, length, concat_ws
 from pyspark.sql.types import StringType
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import Tokenizer, StopWordsRemover, HashingTF, IDF, StringIndexer, VectorAssembler
-from pyspark.ml.classification import LogisticRegression
+from pyspark.ml.classification import LogisticRegression, RandomForestClassifier
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
-
-from pyspark.ml.classification import RandomForestClassifier # trial
 
 spark = SparkSession.builder.appName("CPU_IMP").config("spark.driver.memory", "8g").getOrCreate() 
 data_path = "data/train.csv"
 
+"""
+- hp tuning (tree icin n_estimators, max_depth, min_samples_split, min_samples_leaf, max_features, criterion)
+--- belki gridsearchcv zaman kalırsa. 
+- ngram: from pyspark.ml.feature import NGram
+- tag column kullanma
+- tf idf yerine word2vec: pyspark.ml.feature.Word2Vec
+- metadata: ort kelime uzunlugu ya da noktalama isareti sayisi(?/!)
+"""
 try:
     df = spark.read.format("csv") \
         .option("header", "true") \
